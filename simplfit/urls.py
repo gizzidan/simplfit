@@ -1,4 +1,4 @@
-from simplfit.landingpage import views
+
 
 """simplfit URL Configuration
 
@@ -20,6 +20,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', 'landingpage.views.index')
+    url(r'', include('landingpage.urls'))
 
 ]
