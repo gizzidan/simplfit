@@ -30,47 +30,101 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'landingpage',
-    ]
+INSTALLED_APPS = (
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.redirects",
+    "django.contrib.sessions",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
+    "django.contrib.staticfiles",
+    "mezzanine.boot",
+    "mezzanine.conf",
+    "mezzanine.core",
+    "mezzanine.generic",
+    "mezzanine.pages",
+    "mezzanine.blog",
+    "mezzanine.forms",
+    "mezzanine.galleries",
+    "mezzanine.twitter",
+    # "mezzanine.accounts",
+    # "mezzanine.mobile",
+)
 
-SITE_ID = 1
+# List of middleware classes to use. Order is important; in the request phase,
+# these middleware classes will be applied in the order given, and in the
+# response phase the middleware will be applied in reverse order.
+MIDDLEWARE_CLASSES = (
+    "mezzanine.core.middleware.UpdateCacheMiddleware",
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Uncomment if using internationalisation or localisation
+    # 'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+
+    "mezzanine.core.request.CurrentRequestMiddleware",
+    "mezzanine.core.middleware.RedirectFallbackMiddleware",
+    "mezzanine.core.middleware.TemplateForDeviceMiddleware",
+    "mezzanine.core.middleware.TemplateForHostMiddleware",
+    "mezzanine.core.middleware.AdminLoginInterfaceSelectorMiddleware",
+    "mezzanine.core.middleware.SitePermissionMiddleware",
+    "mezzanine.pages.middleware.PageMiddleware",
+    "mezzanine.core.middleware.FetchFromCacheMiddleware",
+)
+
+# Store these package names here as they may change in the future since
+# at the moment we are using custom forks of them.
+PACKAGE_NAME_FILEBROWSER = "filebrowser_safe"
+PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
+PACKAGE_NAME_FILEBROWSER = "filebrowser_safe"
+PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
+GRAPPELLI_INSTALLED = False
+ADMIN_REMOVAL = []
+RATINGS_RANGE = range(1, 5)
+TESTING = False
+BLOG_SLUG = ''
+COMMENTS_UNAPPROVED_VISIBLE = True
+COMMENTS_REMOVED_VISIBLE = False
+COMMENTS_DEFAULT_APPROVED = True
+COMMENTS_NOTIFICATION_EMAILS = ",".join(ALL_EMAILS)
+COMMENT_FILTER = None
 
 ROOT_URLCONF = 'simplfit.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            os.path.join(PROJECT_ROOT, "templates"),
+            os.path.join(BASE_PARENT, '<path to mezzanine>/mezzanine/mezzanine'),
+            os.path.join(BASE_PARENT, '<path to mezzanine>/mezzanine/mezzanine/blog/templates'),
+        ],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.static",
+                "django.template.context_processors.media",
+                "django.template.context_processors.request",
+                "django.template.context_processors.tz",
+                "mezzanine.conf.context_processors.settings",
+                "mezzanine.pages.context_processors.page",
+            ],
+            "builtins": [
+                "mezzanine.template.loader_tags",
             ],
         },
     },
 ]
-
 WSGI_APPLICATION = 'simplfit.wsgi.application'
 
 
@@ -128,7 +182,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
 import dj_database_url
 DATABASES['default'] = dj_database_url.config()
 
@@ -142,3 +195,10 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+try:
+    from mezzanine.utils.conf import set_dynamic_settings
+except ImportError:
+    pass
+else:
+    set_dynamic_settings(globals())
