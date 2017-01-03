@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'landingpage',
-    'pinax.blog',
-    "pinax.images",
-    'pinax_theme_bootstrap',
-    'bootstrapform',
+    'el_pagination',
+    'markdown_deux',
+    'pagedown',
+    'simpleblog',
 ]
 
 SITE_ID = 1
