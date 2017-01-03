@@ -39,11 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'landingpage',
-    'el_pagination',
-    'markdown_deux',
-    'pagedown',
-    'simpleblog',
-]
+    ]
 
 SITE_ID = 1
 
